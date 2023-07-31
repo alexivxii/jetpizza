@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ro.fabio.jetpizza.MainActivity
+import ro.fabio.jetpizza.model.allPizzas
 import ro.fabio.jetpizza.ui.checkout.CheckoutScreen
 import ro.fabio.jetpizza.ui.configure.ConfigureScreen
 import ro.fabio.jetpizza.ui.home.HomeScreen
@@ -18,10 +19,19 @@ import ro.fabio.jetpizza.ui.home.HomeScreen
 
 @Composable
 fun Main() {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(
-            text = "🍕🤷‍♀️",
-            fontSize = 150.sp,
-        )
+    val navController = rememberNavController();
+    NavHost(navController = navController, startDestination = "home"){
+        composable(
+            route = "home"
+        ){
+            HomeScreen(pizzas = allPizzas)
+        }
+
+        composable(
+            route = "pizzaconfig"
+        ){
+            ConfigureScreen()
+        }
     }
+
 }
