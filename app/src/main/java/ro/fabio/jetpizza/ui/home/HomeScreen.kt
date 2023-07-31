@@ -53,8 +53,8 @@ fun HomeScreen(
 
     var searchText = remember { mutableStateOf(TextFieldValue("")) }
 
-    Log.d("SearchTag","AAAAA")
-    Log.d("SearchTag",searchText.value.toString().lowercase())
+//    Log.d("SearchTag","AAAAA")
+//    Log.d("SearchTag",searchText.value.toString().lowercase())
 
     val searchedPizzaList : List<Pizza> = pizzas.filter { listItem -> listItem.name.lowercase().contains(searchText.value.text.toString().lowercase()) }
 
