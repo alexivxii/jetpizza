@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.foundation.Image
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ro.fabio.jetpizza.model.Pizza
 import ro.fabio.jetpizza.model.allPizzas
+import ro.fabio.jetpizza.ui.ImageAssets
 import ro.fabio.jetpizza.ui.common.UrlImage
 
 
@@ -53,9 +60,6 @@ fun HomeScreen(
 
     var searchText = remember { mutableStateOf(TextFieldValue("")) }
 
-//    Log.d("SearchTag","AAAAA")
-//    Log.d("SearchTag",searchText.value.toString().lowercase())
-
     val searchedPizzaList : List<Pizza> = pizzas.filter { listItem -> listItem.name.lowercase().contains(searchText.value.text.toString().lowercase()) }
 
     Box(
@@ -70,24 +74,91 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.padding(10.dp))
 
-            SearchField(searchTextState = searchText)
+            Header(
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+                onProfileClick = {"/* ready for later implementation */"},
+                onFavoritesClick = {"/* ready for later implementation */"},
+                onMoreClick = {"/* ready for later implementation */"},
+            )
 
             Spacer(modifier = Modifier.padding(10.dp))
 
-            PizzaColumn(pizzas = searchedPizzaList)
+            SearchField(
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+                searchTextState = searchText
+            )
+
+            Spacer(modifier = Modifier.padding(10.dp))
+
+            PizzaColumn(
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+                pizzas = searchedPizzaList
+            )
         }
     }
 }
 
 @Composable
+fun Header(
+    modifier: Modifier = Modifier,
+    onProfileClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
+    onMoreClick: () -> Unit
+) {
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Image(ImageAssets.Logo, "logo")
+
+
+
+        Row() {
+
+            OutlinedIconButton(
+                onClick = onProfileClick,
+            ) {
+                Icon(
+                    Icons.Outlined.Person,
+                    contentDescription = "profile"
+                )
+            }
+
+            OutlinedIconButton(
+                onClick = onProfileClick,
+            ) {
+                Icon(
+                    Icons.Outlined.Favorite,
+                    contentDescription = "profile"
+                )
+            }
+
+            OutlinedIconButton(
+                onClick = onProfileClick,
+            ) {
+                Icon(
+                    Icons.Outlined.MoreVert,
+                    contentDescription = "profile"
+                )
+            }
+        }
+
+    }
+
+}
+
+@Composable
 fun SearchField(
+    modifier: Modifier = Modifier,
     searchTextState: MutableState<TextFieldValue>
 ){
 
 
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .fillMaxWidth()
-        .padding(horizontal = 24.dp)){
+    ){
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = searchTextState.value,
@@ -102,15 +173,15 @@ fun SearchField(
 
 @Composable
 private fun PizzaColumn(
+    modifier: Modifier = Modifier,
     pizzas: List<Pizza>,
-    modifier: Modifier = Modifier
 ) {
     val state = rememberScrollState()
     Column(
         modifier = modifier
             .fillMaxHeight()
             .verticalScroll(state)
-            .padding(start = 24.dp, top = 0.dp, end = 24.dp, bottom = 24.dp),
+            .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         pizzas.forEach { pizza ->
