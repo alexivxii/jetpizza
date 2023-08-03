@@ -15,14 +15,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ro.fabio.jetpizza.model.Pizza
 import ro.fabio.jetpizza.model.allPizzas
+import ro.fabio.jetpizza.ui.common.Minus
 import ro.fabio.jetpizza.ui.home.Header
 import ro.fabio.jetpizza.ui.home.pizzaCard
 
@@ -64,12 +72,25 @@ fun ConfigureScreen(
 
             Spacer(modifier = Modifier.padding(10.dp))
 
-            pizzaConfigurationBody(modifier = Modifier, selectedPizza = selectedPizza)
 
-//            Box(modifier = Modifier
-//                .fillMaxWidth()
-//                .height(60.dp)
-//                .background(color = Color(0xff3b6a00)))
+
+            Box (
+                modifier = Modifier.fillMaxHeight()
+            ){
+
+                //Suprapunerea este bottom-up (bottom = front, up = back)
+
+                pizzaConfigurationBody(modifier = Modifier.padding(bottom = 60.dp), selectedPizza = selectedPizza)
+
+                //in the front
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .background(color = Color(0xff3b6a00))
+                    .align(alignment = Alignment.BottomEnd),
+
+                )
+            }
 
         }
 
@@ -103,8 +124,67 @@ fun pizzaConfigurationBody(
 
         Divider()
 
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Sos dulce", itemPrice = 3.50f)
+
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Sos picant", itemPrice = 2.50f)
+
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Focaccia", itemPrice = 4.50f)
+
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Surpriza", itemPrice = 8.50f)
+
+        Spacer(modifier = Modifier.padding(10.dp))
 
     }
+}
+
+@Composable
+fun extraItem(
+    modifier: Modifier,
+    itemName: String,
+    itemPrice: Float,
+
+){
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            itemName,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight(600)
+        )
+
+        OutlinedIconButton(onClick = { /*TODO*/ }) {
+            Icon(Icons.Filled.Add,contentDescription = null)
+        }
+
+        Text(
+            "Quantity",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight(600)
+        )
+
+        OutlinedIconButton(onClick = { /*TODO*/ }) {
+            Icon(Icons.Filled.Minus,contentDescription = null)
+        }
+
+        Text(
+            "Price",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight(600)
+        )
+    }
+
 }
 
 @Composable
