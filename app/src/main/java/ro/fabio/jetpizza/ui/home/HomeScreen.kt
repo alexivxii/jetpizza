@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
@@ -50,12 +51,14 @@ import ro.fabio.jetpizza.ui.common.UrlImage
 fun HomeScreenPreview() {
     HomeScreen(
         pizzas = allPizzas,
+        onPizzaSelected = {}
     )
 }
 
 @Composable
 fun HomeScreen(
-    pizzas: List<Pizza>
+    pizzas: List<Pizza>,
+    onPizzaSelected: (Pizza) -> Unit //onPizzaSelected is of type Pizza and does function passed from Main.kt
 ) {
 
     var searchText = remember { mutableStateOf(TextFieldValue("")) }
@@ -92,7 +95,8 @@ fun HomeScreen(
 
             PizzaColumn(
                 modifier = Modifier.padding(start = 24.dp, end = 24.dp),
-                pizzas = searchedPizzaList
+                pizzas = searchedPizzaList,
+                onPizzaClick = onPizzaSelected // onPizzaClick gets passed the function from onPizzaSelected
             )
         }
     }
@@ -175,6 +179,7 @@ fun SearchField(
 private fun PizzaColumn(
     modifier: Modifier = Modifier,
     pizzas: List<Pizza>,
+    onPizzaClick: (Pizza) -> Unit //onPizzaClick is of type Pizza and does function passed from onPizzaSelected
 ) {
     val state = rememberScrollState()
     Column(
@@ -192,6 +197,9 @@ private fun PizzaColumn(
                         shape = RoundedCornerShape(16.dp)
                     )
                     .clip(shape = RoundedCornerShape(16.dp))
+                    .clickable {
+                        onPizzaClick(pizza)
+                    }
             ){
                 pizzaCard(
                     pizza
