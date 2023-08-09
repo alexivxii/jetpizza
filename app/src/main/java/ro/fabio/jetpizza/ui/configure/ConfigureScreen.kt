@@ -36,7 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ro.fabio.jetpizza.model.Pizza
+import ro.fabio.jetpizza.model.ExtraItem
 import ro.fabio.jetpizza.model.allPizzas
+import ro.fabio.jetpizza.model.extraItems
 import ro.fabio.jetpizza.ui.common.Minus
 import ro.fabio.jetpizza.ui.home.Header
 import ro.fabio.jetpizza.ui.home.pizzaCard
@@ -103,6 +105,9 @@ fun pizzaConfigurationBody(
     modifier: Modifier,
     selectedPizza: Pizza
 ){
+
+    var extraItemsMutableList = remember{ mutableStateOf(extraItems) }
+
     Column(modifier = modifier.verticalScroll( rememberScrollState())) {
         Box(modifier = Modifier
             .fillMaxHeight()
@@ -126,19 +131,17 @@ fun pizzaConfigurationBody(
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Sos dulce", itemPrice = 3.50f)
-
-        Spacer(modifier = Modifier.padding(10.dp))
-
-        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Sos picant", itemPrice = 2.50f)
-
-        Spacer(modifier = Modifier.padding(10.dp))
-
-        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Focaccia", itemPrice = 4.50f)
-
-        Spacer(modifier = Modifier.padding(10.dp))
-
-        extraItem(modifier = Modifier.padding(horizontal = 24.dp), itemName = "Surpriza", itemPrice = 8.50f)
+        extraItemsMutableList.value.forEachIndexed {
+            index, extraItem -> extraItemRow(
+                modifier = Modifier.padding(start = 24.dp, top = 5.dp, bottom = 5.dp, end = 24.dp),
+                itemName = extraItem.name,
+                itemPrice = extraItem.price,
+                itemAmount = extraItem.amount,
+                itemIndex = index,
+                incrementAction = {extraItemsMutableList.value[index].amount++},
+                decrementAction = { if(extraItemsMutableList.value[index].amount > 0) extraItemsMutableList.value[index].amount-- },
+            )
+        }
 
         Spacer(modifier = Modifier.padding(10.dp))
 
@@ -146,16 +149,18 @@ fun pizzaConfigurationBody(
 }
 
 @Composable
-fun extraItem(
+fun extraItemRow(
     modifier: Modifier,
     itemName: String,
     itemPrice: Float,
-
+    itemAmount: Int,
+    itemIndex: Int,
+    incrementAction: () -> Unit,
+    decrementAction: () -> Unit,
 ){
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -164,23 +169,19 @@ fun extraItem(
             fontWeight = FontWeight(600)
         )
 
-        OutlinedIconButton(onClick = { /*TODO*/ }) {
-            Icon(Icons.Filled.Add,contentDescription = null)
-        }
+        Spacer(modifier = Modifier.weight(1f))
 
-        Text(
-            "Quantity",
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight(600)
+        addExtraQuantityRow(
+            amount = itemAmount,
+            incrementAction = incrementAction,
+            decrementAction = decrementAction,
         )
 
-        OutlinedIconButton(onClick = { /*TODO*/ }) {
-            Icon(Icons.Filled.Minus,contentDescription = null)
-        }
+        Spacer(modifier = Modifier.padding(horizontal = 5.dp))
 
         Text(
-            "Price",
-            style = MaterialTheme.typography.bodyLarge,
+            itemAmount.toString(),
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight(600)
         )
     }
@@ -293,7 +294,29 @@ fun sizeSlider(
 }
 
 @Composable
-fun addExtra(){
+fun addExtraQuantityRow(
+    amount: Int,
+    incrementAction: () -> Unit,
+    decrementAction: () -> Unit,
+){
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedIconButton(onClick = incrementAction) {
+            Icon(Icons.Filled.Add,contentDescription = null)
+        }
+
+        Text(
+            amount.toString(),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight(600)
+        )
+
+        OutlinedIconButton(onClick = decrementAction) {
+            Icon(Icons.Filled.Minus,contentDescription = null)
+        }
+    }
 
 }
 
