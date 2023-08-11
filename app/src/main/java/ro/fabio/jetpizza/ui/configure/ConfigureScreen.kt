@@ -138,8 +138,14 @@ fun pizzaConfigurationBody(
                 itemPrice = extraItem.price,
                 itemAmount = extraItem.amount,
                 itemIndex = index,
-                incrementAction = {extraItemsMutableList.value[index].amount++},
-                decrementAction = { if(extraItemsMutableList.value[index].amount > 0) extraItemsMutableList.value[index].amount-- },
+                incrementAction = {
+                    var tempList = extraItemsMutableList
+                    tempList.value[index].amount++
+                    extraItemsMutableList = tempList },
+                decrementAction = {
+                    var tempList = extraItemsMutableList
+                    if(tempList.value[index].amount > 0) tempList.value[index].amount--
+                    extraItemsMutableList = tempList },
             )
         }
 
@@ -192,6 +198,9 @@ fun extraItemRow(
 fun doughTypeSelect(
     modifier: Modifier
 ){
+
+    var selectedButton = remember { mutableStateOf(0) }
+
     Column(
     ) {
 
@@ -207,39 +216,85 @@ fun doughTypeSelect(
         Row(
             modifier = modifier.fillMaxWidth(),
         ) {
-            Button(
+//            Button(
+//                modifier = Modifier.weight(1f),
+//                onClick = { /*TODO*/ }
+//            ) {
+//                Text(
+//                    text = "Thin",
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    fontWeight = FontWeight(500)
+//                )
+//            }
+
+            doughButton(
                 modifier = Modifier.weight(1f),
-                onClick = { /*TODO*/ }
-            ) {
-                Text(
-                    text = "Thin",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight(500)
-                )
-            }
+                isSelected = selectedButton.value == 0,
+                onClick = { selectedButton.value = 0 },
+                selectColor = Color(0xff84bc4d),
+                text = "Thin")
+
 
             Spacer(modifier = Modifier.padding(horizontal = 5.dp))
 
-            Button(
+//            Button(
+//                modifier = Modifier.weight(1f),
+//                onClick = { /*TODO*/ }
+//            ) {
+//                Text(
+//                    text = "Fluffy",
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    fontWeight = FontWeight(500)
+//                )
+//            }
+
+            doughButton(
                 modifier = Modifier.weight(1f),
-                onClick = { /*TODO*/ }
-            ) {
-                Text(
-                    text = "Fluffy",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight(500)
-                )
-            }
+                isSelected = selectedButton.value == 1,
+                onClick = { selectedButton.value = 1 },
+                selectColor = Color(0xff84bc4d),
+                text = "Fluffy")
+
+
         }
-        Button(modifier = modifier.fillMaxWidth(), onClick = { /*TODO*/ }) {
-            Text(
-                text = "Cheesy Crust",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight(500)
-            )
-        }
+//        Button(modifier = modifier.fillMaxWidth(),
+//            onClick = { /*TODO*/ }) {
+//            Text(
+//                text = "Cheesy Crust",
+//                style = MaterialTheme.typography.bodyMedium,
+//                fontWeight = FontWeight(500)
+//            )
+//        }
+
+        doughButton(
+            modifier = modifier.fillMaxWidth(),
+            isSelected = selectedButton.value == 2,
+            onClick = { selectedButton.value = 2 },
+            selectColor = Color(0xff84bc4d),
+            text = "Cheesy Crust")
     }
 }
+
+@Composable
+fun doughButton(
+    modifier: Modifier,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    selectColor: Color,
+    text: String
+){
+    Button(
+        modifier = modifier.background(if (isSelected) selectColor else  Color(0xff3b6a00)),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight(500)
+        )
+    }
+}
+
 
 @Composable
 fun sizeSlider(
