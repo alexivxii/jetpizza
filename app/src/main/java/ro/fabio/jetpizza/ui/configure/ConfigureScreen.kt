@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -106,7 +107,8 @@ fun pizzaConfigurationBody(
     selectedPizza: Pizza
 ){
 
-    var extraItemsMutableList = remember{ mutableStateOf(extraItems) }
+    //ToDo: now, the extraItemsMutableList is not needed to be a mutableState, can be left as extraItems
+    //var extraItemsMutableList = remember{ mutableStateOf(extraItems) }
 
     Column(modifier = modifier.verticalScroll( rememberScrollState())) {
         Box(modifier = Modifier
@@ -131,21 +133,28 @@ fun pizzaConfigurationBody(
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        extraItemsMutableList.value.forEachIndexed {
+       extraItems.forEachIndexed {
             index, extraItem -> extraItemRow(
                 modifier = Modifier.padding(start = 24.dp, top = 5.dp, bottom = 5.dp, end = 24.dp),
                 itemName = extraItem.name,
                 itemPrice = extraItem.price,
-                itemAmount = extraItem.amount,
+                itemAmount = extraItem.amount.value,
                 itemIndex = index,
                 incrementAction = {
-                    var tempList = extraItemsMutableList
-                    tempList.value[index].amount++
-                    extraItemsMutableList = tempList },
+                    //ToDo: leaving comments here to emphasize problem -> solution
+                    //ToDo: i had to change ExtraItem to have the "amount" a mutable state itself
+                    //ToDo: now, the extraItemsMutableList is not needed to be a mutableState
+//                    var tempList = extraItemsMutableList
+//                    tempList.value[index].amount++
+//                    extraItemsMutableList = tempList
+                                  extraItem.amount.value++
+                                  },
                 decrementAction = {
-                    var tempList = extraItemsMutableList
-                    if(tempList.value[index].amount > 0) tempList.value[index].amount--
-                    extraItemsMutableList = tempList },
+                                  if(extraItem.amount.value>0) extraItem.amount.value--
+//                    var tempList = extraItemsMutableList
+//                    if(tempList.value[index].amount > 0) tempList.value[index].amount--
+//                    extraItemsMutableList = tempList
+                                  },
             )
         }
 
@@ -186,7 +195,7 @@ fun extraItemRow(
         Spacer(modifier = Modifier.padding(horizontal = 5.dp))
 
         Text(
-            itemAmount.toString(),
+            text = String.format("%.2f", itemAmount * itemPrice),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight(600)
         )
@@ -284,7 +293,10 @@ fun doughButton(
     text: String
 ){
     Button(
-        modifier = modifier.background(if (isSelected) selectColor else  Color(0xff3b6a00)),
+
+        //modifier = modifier.background(if (isSelected) selectColor else  Color(0xff3b6a00)),
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(containerColor = if (isSelected) selectColor else  MaterialTheme.colorScheme.primary),
         onClick = onClick
     ) {
         Text(
