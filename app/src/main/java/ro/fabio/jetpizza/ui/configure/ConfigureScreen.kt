@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -86,13 +88,16 @@ fun ConfigureScreen(
                 pizzaConfigurationBody(modifier = Modifier.padding(bottom = 60.dp), selectedPizza = selectedPizza)
 
                 //in the front
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .background(color = Color(0xff3b6a00))
-                    .align(alignment = Alignment.BottomEnd),
+//                Box(modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(60.dp)
+//                    .background(color = Color(0xff3b6a00))
+//                    .align(alignment = Alignment.BottomEnd),
+//
+//                )
 
-                )
+                val totalSum = selectedPizza.price + extraItems.sumOf { item -> (item.amount.value * item.price).toDouble() }
+                CheckoutButton(totalSum = totalSum.toFloat(), onClick = {}, modifier = Modifier.align(alignment = Alignment.BottomCenter))
             }
 
         }
@@ -100,6 +105,41 @@ fun ConfigureScreen(
 
     }
 }
+
+val CheckoutButtonHeight = 64.dp
+@Composable
+fun CheckoutButton(
+    totalSum: Float,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        onClick = onClick,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(CheckoutButtonHeight)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                Icons.Filled.ShoppingCart,
+                contentDescription = "checkout",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(64.dp)
+            )
+
+            Text(
+                text = "%.2f LEI".format(totalSum),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    }
+}
+
 
 @Composable
 fun pizzaConfigurationBody(
