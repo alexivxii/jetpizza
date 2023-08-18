@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import ro.fabio.jetpizza.MainActivity
 import ro.fabio.jetpizza.model.Pizza
 import ro.fabio.jetpizza.model.allPizzas
+import ro.fabio.jetpizza.model.extraItems
 import ro.fabio.jetpizza.ui.checkout.CheckoutScreen
 import ro.fabio.jetpizza.ui.configure.ConfigureScreen
 import ro.fabio.jetpizza.ui.home.HomeScreen
@@ -30,7 +31,12 @@ fun Main() {
         ){
             HomeScreen(
                 pizzas = allPizzas,
-                onPizzaSelected = { /* to be implemented */ pizza : Pizza -> navController.navigate("pizzaconfig/${pizza.id}") }   //every item of type Pizza does -> function
+                onPizzaSelected = {
+                        pizza : Pizza -> navController.navigate("pizzaconfig/${pizza.id}")
+
+                        //reset extraItems amounts
+                        extraItems.forEach{extraItem -> extraItem.amount.value = 0}
+                }   //every item of type Pizza does -> function
             )
         }
 
